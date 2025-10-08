@@ -5,7 +5,7 @@ import type { Todo } from "@/app/lib/types/todo";
 describe("searchLogic", () => {
   describe("searchTodos", () => {
     const mockTodos: Todo[] = [
-      { id: "1", text: "Buy groceries", completed: false, createdAt: 1 },
+      { id: "1", text: "Buy grocery items", completed: false, createdAt: 1 },
       { id: "2", text: "Write code", completed: true, createdAt: 2 },
       { id: "3", text: "Read a book", completed: false, createdAt: 3 },
       { id: "4", text: "GROCERY shopping list", completed: false, createdAt: 4 },
