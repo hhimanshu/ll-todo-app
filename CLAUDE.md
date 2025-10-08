@@ -179,6 +179,125 @@ describe("moduleName", () => {
 - Use descriptive test names
 - Mirror source directory structure in `tests/`
 
+## Pull Requests & Code Reviews
+
+### Creating Pull Requests
+
+**Before creating a PR:**
+1. Ensure all tests pass: `bun test`
+2. Ensure linting passes: `bun run lint`
+
+**PR Title Convention:**
+Use clear, descriptive titles that indicate the type of change:
+- `feat: Add todo sorting functionality`
+- `fix: Resolve todo deletion bug`
+- `refactor: Simplify filter logic`
+- `test: Add tests for edit functionality`
+- `docs: Update CLAUDE.md with review guidelines`
+
+**PR Description Should Include:**
+- Summary of changes (what and why)
+- Testing approach
+- Any breaking changes
+- Screenshots/videos for UI changes
+
+### Code Review Checklist
+
+#### ✅ Architecture & Patterns
+- [ ] Business logic is in `app/lib/logic/` as pure functions
+- [ ] UI components are in `app/components/`
+- [ ] State management uses `useTodoStore` hook correctly
+- [ ] Zustand selectors are specific (not selecting entire state)
+- [ ] File naming follows conventions (PascalCase for components, camelCase for logic)
+- [ ] Absolute imports use `@/` prefix
+
+#### ✅ TypeScript
+- [ ] Explicit interface definitions for all props and data structures
+- [ ] No `any` types (use proper typing)
+- [ ] Type-only imports use `import type`
+- [ ] Prefer `interface` over `type` for object shapes
+
+#### ✅ React Components
+- [ ] Client components marked with `"use client"`
+- [ ] Components have explicit props interfaces
+- [ ] No mixed concerns (UI logic separate from business logic)
+- [ ] Proper semantic HTML and accessibility attributes
+- [ ] Only Tailwind CSS classes (no custom CSS)
+
+#### ✅ Immutability
+- [ ] Functions return new arrays/objects instead of mutating
+- [ ] No direct state mutation
+- [ ] Tests verify original data isn't mutated
+
+#### ✅ Testing
+- [ ] New logic functions have corresponding tests
+- [ ] Tests cover edge cases (empty inputs, invalid data)
+- [ ] Test names are descriptive
+- [ ] Tests verify immutability
+
+#### ✅ Code Quality
+- [ ] JSDoc comments for all functions in `app/lib/logic/`
+- [ ] Descriptive variable and function names
+- [ ] No commented-out code
+- [ ] Consistent code formatting
+
+### Good Practices vs Red Flags
+
+#### ✅ Good Practices
+- **Immutability**: Functions return new objects/arrays
+  ```typescript
+  return todos.filter((todo) => todo.id !== id);
+  ```
+- **Type Safety**: Explicit TypeScript interfaces
+  ```typescript
+  interface TodoItemProps {
+    todo: Todo;
+    onToggle: (id: string) => void;
+  }
+  ```
+- **Component Isolation**: Single responsibility components
+- **Pure Functions**: Business logic separated from UI
+- **Proper State Management**: Using Zustand through provider pattern
+- **Specific Selectors**: Only selecting needed state
+  ```typescript
+  const addTodo = useTodoStore((state) => state.addTodo);
+  ```
+
+#### ❌ Red Flags
+- **Direct State Mutation**: Modifying arrays/objects in place
+  ```typescript
+  // BAD
+  todos.push(newTodo);
+  ```
+- **Mixed Concerns**: Business logic in UI components
+  ```typescript
+  // BAD - logic should be in app/lib/logic/
+  function TodoItem() {
+    const newTodo = { id: Date.now(), ... };
+  }
+  ```
+- **Type Anys**: Using `any` instead of proper types
+- **Missing Validation**: No input validation for user data
+- **Inconsistent Styling**: Custom CSS instead of Tailwind
+- **Client/Server Issues**: Using client APIs in server components
+- **Selecting Entire State**: Not using specific selectors
+  ```typescript
+  // BAD
+  const store = useTodoStore((state) => state);
+  ```
+
+### Performance Considerations
+- Use specific Zustand selectors to minimize re-renders
+- Avoid importing entire libraries when tree-shaking is possible
+- Use Next.js Image component for images
+- Keep bundle size in check
+
+### Security & Validation
+- Always validate and sanitize user inputs
+- Avoid `dangerouslySetInnerHTML` without sanitization
+- Use proper environment variable handling for sensitive data
+- Implement error boundaries for client components
+
 ## CI/CD
 
 GitHub Actions workflow (`.github/workflows/test.yml`) runs on all PRs and pushes to main:
