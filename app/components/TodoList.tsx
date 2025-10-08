@@ -3,12 +3,14 @@
 import { useTodoStore } from "@/app/lib/store/StoreProvider";
 import { TodoItem } from "./TodoItem";
 import { filterTodos } from "@/app/lib/logic/filterLogic";
+import { searchTodos } from "@/app/lib/logic/searchLogic";
 
 export function TodoList() {
   const todos = useTodoStore((state) => state.todos);
   const filter = useTodoStore((state) => state.filter);
+  const searchQuery = useTodoStore((state) => state.searchQuery);
 
-  const filteredTodos = filterTodos(todos, filter);
+  const filteredTodos = searchTodos(filterTodos(todos, filter), searchQuery);
 
   if (todos.length === 0) {
     return (
